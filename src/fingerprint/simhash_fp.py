@@ -1,4 +1,5 @@
 """
+simhash on k-grams
 TODO: implement rolling tf-idf that builds up from document data from sqlite
 """
 from __future__ import annotations

@@ -162,6 +162,6 @@ def tokenize(s: str) -> List[str]:
     return re.findall(r'\w+', s)
 
 
-def shingle(tokens: List[str], k: int) -> List[str]:
+def k_gram(tokens: List[str], k: int) -> List[str]:
     if len(tokens) < k: return []
     return [' '.join(tokens[i:i+k]) for i in range(len(tokens)-k+1)]

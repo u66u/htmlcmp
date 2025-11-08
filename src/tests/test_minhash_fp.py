@@ -2,11 +2,10 @@ import random
 import pytest
 from fingerprint.minhash_fp import (
     MinHashConfig,
-    hashed_shingle_set,
+    hashed_k_gram_set,
     minhash_signature,
     estimate_jaccard,
     jaccard_of_sets,
-    shingles_from_tokens,
 )
 
 
@@ -17,15 +16,15 @@ def test_empty_and_short_inputs_signature():
     assert all(x == 2**64 - 1 for x in sig)
 
     tokens = ["a", "b", "c"]
-    sh = hashed_shingle_set(tokens, cfg)
+    sh = hashed_k_gram_set(tokens, cfg)
     assert sh == set()
 
 
 def test_identical_docs_identical_signatures():
     tokens = "this is a minhash test this is only a test".split()
     cfg = MinHashConfig(k_words=3, num_perm=64, use_xxhash=False, seed=42)
-    sh1 = hashed_shingle_set(tokens, cfg)
-    sh2 = hashed_shingle_set(tokens[:], cfg)
+    sh1 = hashed_k_gram_set(tokens, cfg)
+    sh2 = hashed_k_gram_set(tokens[:], cfg)
     sig1 = minhash_signature(sh1, cfg)
     sig2 = minhash_signature(sh2, cfg)
     assert sig1 == sig2
@@ -40,8 +39,8 @@ def test_jaccard_estimate_tracks_true_jaccard():
         edited_tokens[idx] = f"x{idx}"
 
     cfg = MinHashConfig(k_words=3, num_perm=128, use_xxhash=False, seed=7)
-    A = hashed_shingle_set(base_tokens, cfg)
-    B = hashed_shingle_set(edited_tokens, cfg)
+    A = hashed_k_gram_set(base_tokens, cfg)
+    B = hashed_k_gram_set(edited_tokens, cfg)
     sigA = minhash_signature(A, cfg)
     sigB = minhash_signature(B, cfg)
 
@@ -54,8 +53,8 @@ def test_far_sets_low_estimated_jaccard():
     tokens_a = [f"a{i}" for i in range(200)]
     tokens_b = [f"b{i}" for i in range(200)]
     cfg = MinHashConfig(k_words=3, num_perm=128, use_xxhash=False, seed=1)
-    A = hashed_shingle_set(tokens_a, cfg)
-    B = hashed_shingle_set(tokens_b, cfg)
+    A = hashed_k_gram_set(tokens_a, cfg)
+    B = hashed_k_gram_set(tokens_b, cfg)
     sigA = minhash_signature(A, cfg)
     sigB = minhash_signature(B, cfg)
     est_j = estimate_jaccard(sigA, sigB)
