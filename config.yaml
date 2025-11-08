@@ -1,0 +1,17 @@
+# All filters are enabled by default
+
+# Filter toggles
+filter_short_meta: true      # Drop very short lines (<20 chars) unless they end with sentence punctuation
+filter_read_time: true       # Remove "X min read" patterns
+filter_date_lines: true      # Remove date-only lines
+filter_digit_heavy: true     # Remove lines dominated by digits/punctuation
+normalize_handles: true      # Replace @handles with placeholder token
+normalize_urls: true         # Replace URLs with placeholder token
+
+# Thresholds
+short_line_threshold: 20     # Minimum line length for meta filtering
+digit_heavy_threshold: 0.3   # Minimum ratio of letters to total chars (0.0-1.0)
+
+# Replacement tokens
+handle_token: "[HANDLE]"
+url_token: "[URL]"
