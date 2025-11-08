@@ -32,13 +32,11 @@ class CanonicalizeConfig:
     def load(cls, yaml_path: Optional[str] = None, env_prefix: str = "CANON_", **overrides) -> 'CanonicalizeConfig':
         config_dict = {}
         
-        # first from YAML if provided
         if yaml_path and os.path.exists(yaml_path):
             with open(yaml_path, 'r') as f:
                 yaml_config = yaml.safe_load(f) or {}
                 config_dict.update({k: v for k, v in yaml_config.items() if hasattr(cls, k)})
         
-        # Override with environment variables
         env_mappings = {
             f"{env_prefix}FILTER_SHORT_META": ("filter_short_meta", lambda x: x.lower() == 'true'),
             f"{env_prefix}FILTER_READ_TIME": ("filter_read_time", lambda x: x.lower() == 'true'),
@@ -57,7 +55,6 @@ class CanonicalizeConfig:
             if value is not None:
                 config_dict[field_name] = converter(value)
         
-        # apply manual overrides
         config_dict.update(overrides)
         
         return cls(**config_dict)
