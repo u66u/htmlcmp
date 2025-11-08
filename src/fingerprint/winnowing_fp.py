@@ -1,5 +1,10 @@
 """
 Winnowing over k-grams using Rabin–Karp rolling hash.
+Might be sensitive to parameters, sensible defaults are k=5 words, window w=10,
+this should give ~200–600 fingerprints per document.
+Avoid window=1
+
+TODO: dynamically infer k and window size from document length
 """
 from __future__ import annotations
 from dataclasses import dataclass
@@ -68,7 +73,7 @@ def winnow_from_hashes(hashes: List[int], window_size: int) -> Tuple[Set[int], L
     if n == 0: return set(), []
     w = max(1, min(window_size, n))
 
-    # Degenerate case: w = 1 → select every element (no winnowing)
+    # worst case: w = 1 → select every element (no winnowing)
     if w == 1:
         picks_seq = [(hashes[i], i) for i in range(n)]
         picks_set = set(hashes)

@@ -56,3 +56,38 @@ def test_rightmost_tie_break_behavior():
     expected = [(4, 2), (2, 4), (2, 5)]
     filtered = [(v, i) for (v, i) in picks if v in {4, 2}]
     assert expected == filtered[: len(expected)]
+
+
+examples = [
+    ("Plagiarism detection techniques typically use document fingerprinting methods", 5, 10),
+    ("The quick brown fox jumps over the lazy dog multiple times", 4, 5),
+    ("A rolling hash significantly speeds up substring search in large texts", 6, 12),
+    ("Winnowing algorithm selects minimal hashes to produce document fingerprints", 5, 8),
+    ("Document similarity detection can benefit from combined k-gram hashing approaches", 7, 10),
+    ("Text preprocessing including tokenization stop-word removal affects fingerprinting", 5, 9),
+    ("Hash collisions are rare but possible; they can introduce false positives in matches", 4, 7),
+    ("Applications of Winnowing span plagiarism detection text deduplication and bioinformatics", 6, 11),
+    ("Plagiarism detection systems require efficient and robust document comparison algorithms", 5, 10),
+    ("Efficient local fingerprinting like Winnowing balances accuracy and computational cost", 5, 8),
+]
+
+
+@pytest.mark.parametrize("text,k,w", examples)
+def test_winnowing_general(text, k, w):
+    def tokenize(text):
+        return text.lower().split()
+
+    tokens = tokenize(text)
+    cfg = WinnowConfig(k_words=k, window_size=w)
+    fingerprints, seq = winnow(tokens, cfg)
+    assert len(fingerprints) <= max(len(tokens) - k + 1, 0)
+
+    for _, pos in seq:
+        assert 0 <= pos <= len(tokens) - k
+
+    assert len(fingerprints) == len(set(fp for fp, _ in seq))
+
+
+
+
+
